@@ -1,4 +1,7 @@
-import { useState } from 'react';
+import { useState } from "react";
+import TodoHeader from "./components/TodoHeader";
+import TodoInput from "./components/TodoInput";
+import TodoList from "./components/TodoList";
 
 function fetchTodos() {
   const result = [];
@@ -11,48 +14,23 @@ function fetchTodos() {
 }
 
 function App() {
-  const [inputText, setInputText] = useState('');
   const [todos, setTodos] = useState(fetchTodos());
-
-  const handleInput = (event) => {
-    const value = event.target.value;
-    setInputText(value);
-  }
-
-  const handleClick = () => {
-    localStorage.setItem(inputText, inputText);
-    setTodos((currentTodos) => [...currentTodos, inputText]);
-    setInputText('');
-  }
-
-  const handleRemove = (todo, index) => {
-    const result = todos.filter(todoItem => todoItem !== todo);
+  const addTodo = (todo) => {
+    localStorage.setItem(todo, todo);
+    setTodos((currentTodos) => [...currentTodos, todo]);
+  };
+  const removeTodo = (todo) => {
+    const result = todos.filter((todoItem) => todoItem !== todo);
     setTodos(result);
     localStorage.removeItem(todo);
-  }
-
+  };
   return (
     <div>
-      <h1>Ted TODO 앱</h1>
-      <div>
-        <input type="text" value={inputText} onChange={handleInput}/>
-        <button onClick={handleClick}>추가</button>
-      </div>
-      <div>
-        <ul>
-          {todos.map((todo, index) => {
-              return (
-              <li key={index}>
-                <span>{todo}</span>
-                <button onClick={() => handleRemove(todo, index)}>삭제</button>
-              </li>
-              )
-            })
-          }
-        </ul>
-      </div>
+      <TodoHeader />
+      <TodoInput onTodoAdd={addTodo} />
+      <TodoList todos={todos} onTodoRemove={removeTodo} />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
